@@ -235,9 +235,12 @@ extension HomeViewController: UISearchBarDelegate {
         pendingRequestWorkItem?.cancel()
 
         if searchText.isEmpty {
+            searchBar.showsCancelButton = false
             state = .idle
             return
         }
+
+        searchBar.showsCancelButton = true
 
         let workItem = DispatchWorkItem { [weak self] in
             self?.searchUsers(with: searchText)
@@ -253,5 +256,25 @@ extension HomeViewController: UISearchBarDelegate {
         if let query = searchBar.text, !query.isEmpty {
             searchUsers(with: query)
         }
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        DispatchQueue.main.async { [weak self] in
+            searchBar.text = ""
+            searchBar.resignFirstResponder()
+            self?.pendingRequestWorkItem?.cancel()
+            self?.state = .idle
+            searchBar.showsCancelButton = false
+        }
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        if let searchText = searchBar.text, !searchText.isEmpty {
+            searchBar.showsCancelButton = true
+        }
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
     }
 }
