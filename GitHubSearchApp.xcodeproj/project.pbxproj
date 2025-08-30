@@ -18,7 +18,6 @@
 		F4C7AEB12E61C54400A3C438 /* Exceptions for "GitHubSearchApp" folder in "GitHubSearchApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				FavoriteUser.xcdatamodeld,
 				Info.plist,
 			);
 			target = F4C7AE9B2E61C54200A3C438 /* GitHubSearchApp */;
