@@ -9,5 +9,5 @@ import Foundation
 
 struct TableViewConstants {
     static let rowHeight: CGFloat = 100
-    static let cellIdentifier = "TableViewCell"
+    static let cellIdentifier = AppStrings.tableViewCellIdentifier
 }

@@ -71,17 +71,17 @@ final class EmptyStateView: UIView {
     func configure(for type: EmptyStateType) {
         switch type {
         case .initialSearch:
-            iconImageView.image = UIImage(systemName: "magnifyingglass")
-            titleLabel.text = "Start your search"
-            descriptionLabel.text = "Please enter a GitHub username above to begin searching."
+            iconImageView.image = AppIcons.magnifyingGlass
+            titleLabel.text = AppStrings.emptyInitial
+            descriptionLabel.text = AppStrings.emptyInitialMessage
         case .searchNoResults:
-            iconImageView.image = UIImage(systemName: "xmark.circle")
-            titleLabel.text = "No results found"
-            descriptionLabel.text = "Try a different username or check the spelling."
+            iconImageView.image = AppIcons.close
+            titleLabel.text = AppStrings.emptyNoResults
+            descriptionLabel.text = AppStrings.emptyNoResultsSubtext
         case .noFavorites:
-            iconImageView.image = UIImage(systemName: "star")
-            titleLabel.text = "No favorites yet"
-            descriptionLabel.text = "Add some users to your favorites list."
+            iconImageView.image = AppIcons.star
+            titleLabel.text = AppStrings.emptyNoFavorites
+            descriptionLabel.text = AppStrings.emptyNoFavoritesDescription
         }
 
         alpha = 0

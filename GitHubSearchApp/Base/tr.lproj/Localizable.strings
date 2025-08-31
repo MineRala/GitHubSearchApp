@@ -1,0 +1,36 @@
+/* 
+  Localizable.strings
+  GitHubSearchApp
+
+  Created by MINERALA on 31.08.2025.
+  
+*/
+
+/* UI */
+"home" = "Ana Sayfa";
+"favorites" = "Favoriler";
+"emptyInitial" = "Aramaya başlayın";
+"emptyInitialMessage" = "Aramaya başlamak için lütfen yukarıya bir GitHub kullanıcı adı girin.";
+"emptyNoResults" = "Sonuç bulunamadı";
+"emptyNoResultsSubtext" = "Farklı bir kullanıcı adı deneyin veya yazımı kontrol edin.";
+"emptyNoFavorites" = "Henüz favori yok";
+"emptyNoFavoritesDescription" = "Favori listenize kullanıcı ekleyin.";
+"error" = "Hata";
+"ok" = "Tamam";
+"placeholderSearchBar" = "Lütfen bir kullanıcı adı girin";
+
+/* Errors */
+"invalidURL" = "Geçersiz URL";
+"invalidResponse" = "Geçersiz Yanıt";
+"invalidRequest" = "Geçersiz İstek";
+"invalidData" = "Sunucudan alınan veri geçersiz. Lütfen tekrar deneyin.";
+"invalidHTTPStatusCode" = "Geçersiz HTTP Durum Kodu: ";
+"networkError" = "Bir ağ hatası oluştu. İnternet bağlantınızı kontrol edin ve tekrar deneyin.";
+"decodingError" = "Kod çözme Hatası";
+"unauthorized" = "Bu işlemi gerçekleştirmek için giriş yapmanız veya gerekli yetkilendirmeye sahip olmanız gerekiyor. Lütfen giriş yapın veya gerekli yetkilendirmeyi sağlayın.";
+"paymentRequired" = "Üzgünüz, bu içeriği görüntülemek veya erişmek için ödeme yapmanız gerekiyor.";
+"forbidden" = "İzin verilen istek sayısını aştınız. Lütfen biraz bekleyin ve tekrar deneyin.";
+"pageNotFound" = "Üzgünüz, istediğiniz sayfa veya kaynak bulunamadı. Lütfen URL'yi kontrol edin veya daha sonra tekrar deneyin.";
+"noInternetConnection" = "Üzgünüz, internet bağlantısı yok. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.";
+"unowned" = "Sahipsiz Hata!";
+"navigationError" = "Navigasyon Hatası: Koordinatör eksik.";

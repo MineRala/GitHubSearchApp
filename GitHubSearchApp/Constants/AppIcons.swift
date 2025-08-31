@@ -11,6 +11,8 @@ struct AppIcons {
     static let star = UIImage(systemName: "star")
     static let starFill = UIImage(systemName: "star.fill")
     static let homeFill = UIImage(systemName: "house.fill")
+    static let magnifyingGlass = UIImage(systemName: "magnifyingglass")
+    static let close = UIImage(systemName: "xmark.circle")
 }
 
 struct AppImages {

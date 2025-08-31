@@ -1,0 +1,36 @@
+/* 
+  Localizable.strings
+  GitHubSearchApp
+
+  Created by MINERALA on 31.08.2025.
+  
+*/
+
+/* UI */
+"home" = "Home";
+"favorites" = "Favorites";
+"emptyInitial" = "Start your search";
+"emptyInitialMessage" = "Please enter a GitHub username above to begin searching.";
+"emptyNoResults" = "No results found";
+"emptyNoResultsSubtext" = "Try a different username or check the spelling.";
+"emptyNoFavorites" = "No favorites yet";
+"emptyNoFavoritesDescription" = "Add some users to your favorites list.";
+"error" = "Error";
+"ok" = "OK";
+"placeholderSearchBar" = "Please enter a username";
+
+/* Errors */
+"invalidURL" = "Invalid URL";
+"invalidResponse" = "Invalid Response";
+"invalidRequest" = "Invalid Request";
+"invalidData" = "The data received from the server was invalid. Please try again.";
+"invalidHTTPStatusCode" = "Invalid HTTP Status Code: ";
+"networkError" = "A network error has occurred. Check your Internet connection and try again.";
+"decodingError" = "Decoding Error";
+"unauthorized" = "In order to perform this operation, you must be logged in or have the necessary authorization. Please log in or provide the necessary authorization.";
+"paymentRequired" = "Sorry, you need to pay to view or access this content.";
+"forbidden" = "You have exceeded the allowed number of requests. Please wait a while and try again.";
+"pageNotFound" = "Sorry, the page or resource you requested could not be found. Please check the URL or try again later.";
+"noInternetConnection" = "Sorry, there is no internet connection. Please check your internet connection and try again.";
+"unowned" = "Unowned Error!";
+"navigationError" = "Navigation Error: Missing coordinator.";

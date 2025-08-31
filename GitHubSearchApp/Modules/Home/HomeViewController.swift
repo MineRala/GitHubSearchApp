@@ -27,7 +27,7 @@ final class HomeViewController: UIViewController {
     // MARK: - UI Components
     private lazy var searchBar: UISearchBar = {
         let searchBar = UISearchBar()
-        searchBar.placeholder = "Please enter a username"
+        searchBar.placeholder = AppStrings.placeholderSearchBar
         searchBar.delegate = self
         searchBar.showsCancelButton = false
         searchBar.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +38,7 @@ final class HomeViewController: UIViewController {
         let tableView = UITableView()
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(TableViewCell.self, forCellReuseIdentifier: "TableViewCell")
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewConstants.cellIdentifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()

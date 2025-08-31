@@ -20,7 +20,7 @@ final class CoreDataManager: CoreDataManagerProtocol {
     private let persistentContainer: NSPersistentContainer
 
     init() {
-        persistentContainer = NSPersistentContainer(name: "FavoriteUser")
+        persistentContainer = NSPersistentContainer(name: AppStrings.favoriteEntityName)
         persistentContainer.loadPersistentStores { (_, error) in }
     }
 
