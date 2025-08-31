@@ -21,9 +21,3 @@ struct SearchItem: Decodable {
         case avatarURL = "avatar_url"
     }
 }
-
-extension SearchItem {
-    var isFavorite: Bool {
-        return CoreDataManager.shared.isFavorite(login: login)
-    }
-}

@@ -19,8 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ) -> Bool {
 
         let window = UIWindow(frame: UIScreen.main.bounds)
+        
+        let networkManager = NetworkManager()
+        let cacheManager = CacheManager()
+        let coreDataManager = CoreDataManager()
 
-        window.rootViewController = TabBarBuilder.build()
+        window.rootViewController = TabBarBuilder.build(networkManager: networkManager, cacheManager: cacheManager, coreDataManager: coreDataManager)
         window.makeKeyAndVisible()
         self.window = window
 

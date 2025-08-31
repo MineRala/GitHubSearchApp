@@ -10,42 +10,37 @@ import UIKit
 protocol CacheManagerProtocol {
     func getImage(for url: String) -> UIImage?
     func cacheImage(_ image: UIImage, for url: String)
-    func loadImage(from url: String, completion: @escaping (UIImage?) -> Void)
+    func loadImage(from url: String) async -> Data?
 }
 
 final class CacheManager: CacheManagerProtocol {
     private let imageCache = NSCache<NSString, UIImage>()
-
+    
     func getImage(for url: String) -> UIImage? {
         return imageCache.object(forKey: url as NSString)
     }
-
+    
     func cacheImage(_ image: UIImage, for url: String) {
         imageCache.setObject(image, forKey: url as NSString)
     }
-
-    func loadImage(from url: String, completion: @escaping (UIImage?) -> Void) {
+    
+    func loadImage(from url: String) async -> Data? {
         if let cachedImage = getImage(for: url) {
-            completion(cachedImage)
-            return
+            return cachedImage.pngData()
         }
-
-        guard let imageURL = URL(string: url) else {
-            completion(nil)
-            return
+        
+        guard let imageURL = URL(string: url) else { return nil }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: imageURL)
+            if let image = UIImage(data: data) {
+                cacheImage(image, for: url)
+                return image.pngData()
+            } else {
+                return nil
+            }
+        } catch {
+            return nil
         }
-
-        URLSession.shared.dataTask(with: imageURL) { data, _, error in
-            guard let data = data, let image = UIImage(data: data), error == nil else {
-                completion(nil)
-                return
-            }
-
-            self.cacheImage(image, for: url)
-
-            DispatchQueue.main.async {
-                completion(image)
-            }
-        }.resume()
     }
 }

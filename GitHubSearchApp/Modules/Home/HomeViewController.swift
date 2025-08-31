@@ -8,6 +8,19 @@
 import UIKit
 import SnapKit
 
+protocol HomeViewControllerProtocol: AnyObject {
+    func tableReload()
+    func showErrorAlert(title: String, message: String)
+    func scrollUp()
+    func shouldShowCancelButton(_ isShow: Bool)
+    func showTable(_ isVisible: Bool)
+    func emptyStateViewConfigure(_ state: EmptyStateType )
+    func showEmptyStateView(_ isVisible: Bool)
+    func isActivityIndicatorAnimating(_ isAnimating: Bool)
+    func reloadRow(at indexPath: IndexPath)
+    func isTableViewVisible() -> Bool
+}
+
 // MARK: - HomeViewController
 final class HomeViewController: UIViewController {
 
@@ -40,44 +53,29 @@ final class HomeViewController: UIViewController {
 
     private lazy var emptyStateView = EmptyStateView()
 
-    // MARK: - Dependencies & State
-    private let networkManager = NetworkManager()
-    private let cacheManager = CacheManager()
-    private let coreDataManager = CoreDataManager()
-    
-    // MARK: - Debounce
-    private let debounceQueue = DispatchQueue(label: "com.githubsearchapp.debounce")
-    private var pendingRequestWorkItem: DispatchWorkItem?
-    
-    private var items: [SearchItem] = []
-    private var needsReload = false
-
-    private var state: HomeState = .idle {
-        didSet {
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                self.updateUI(for: self.state)
-            }
-        }
+    private var viewModel: HomeViewModelProtocol
+   
+    // MARK:  Initializer
+    init(viewModel: HomeViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel.delegate = self
     }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .favoriteItemUpdated, object: nil)
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        addNotificationObserver()
-        state = .idle
+        viewModel.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if needsReload {
-            tableView.reloadData()
-        }
+        viewModel.viewWillAppear()
      }
 
     // MARK: - UI Setup
@@ -102,179 +100,118 @@ final class HomeViewController: UIViewController {
 
         view.bringSubviewToFront(searchBar)
     }
-
-    // MARK: - Search
-    private func searchUsers(with query: String) {
-        guard !query.isEmpty else { return }
-        
-        state = .loading
-        
-        networkManager.makeRequest(endpoint: .searchUsers(searchText: query), type: SearchResponse.self) { [weak self] result in
-            guard let self else { return }
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    self.state = response.items.isEmpty ? .empty : .populated(response.items)
-                    
-                case .failure(let error):
-                    self.state = .empty
-                    self.showAlert(title: "Network Error", message: error.errorMessage)
-                }
-            }
-        }
-    }
-
-  // MARK: - UI Update
-    private func updateUI(for state: HomeState) {
-        switch state {
-        case .idle:
-            self.items = []
-            tableView.isHidden = true
-            emptyStateView.configure(for: .initialSearch)
-            emptyStateView.isHidden = false
-            activityIndicator.stopAnimating()
-
-        case .loading:
-            self.items = []
-            tableView.isHidden = true
-            emptyStateView.isHidden = true
-            activityIndicator.startAnimating()
-
-        case .populated(let items):
-            self.items = items
-            emptyStateView.isHidden = true
-            activityIndicator.stopAnimating()
-            tableView.isHidden = false
-            tableView.reloadData()
-            scrollUp()
-
-        case .empty:
-            self.items = []
-            tableView.isHidden = true
-            activityIndicator.stopAnimating()
-            emptyStateView.configure(for: .searchNoResults)
-            emptyStateView.isHidden = false
-        }
-    }
-    
-    private func scrollUp () {
-        if !items.isEmpty {
-            DispatchQueue.main.async {
-                self.tableView.layoutIfNeeded()
-                self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-            }
-           
-        }
-    }
-
-// MARK: - Refresh
-    private func addNotificationObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleFavoriteUpdated(_:)), name: .favoriteItemUpdated, object: nil)
-    }
-
-    @objc private func handleFavoriteUpdated(_ notif: Notification) {
-        guard let updatedItem = notif.object as? SearchItem else { return }
-        updateItemInTable(updatedItem)
-    }
-    
-    private func updateItemInTable(_ updatedItem: SearchItem) {
-        guard let index = items.firstIndex(where: { $0.login == updatedItem.login }) else { return }
-
-        items[index] = updatedItem
-        let indexPath = IndexPath(row: index, section: 0)
-
-        DispatchQueue.main.async {
-            if self.tableView.window != nil {
-                if let visibleRows = self.tableView.indexPathsForVisibleRows,
-                   visibleRows.contains(indexPath) {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                } else {
-                    self.tableView.reloadData()
-                }
-            } else {
-                self.needsReload = true
-            }
-        }
-    }
 }
 
 // MARK: - UITableViewDataSource & Delegate
 extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        items.count
+        viewModel.itemsCount
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as? TableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewConstants.cellIdentifier, for: indexPath) as? TableViewCell else {
             return UITableViewCell()
         }
-
-        let item = items[indexPath.row]
-        cell.configure(with: item, cacheManager: cacheManager, coreDataManager: coreDataManager)
-
+        
+        guard indexPath.row < viewModel.itemsCount else { return cell }
+        
+        let item = viewModel.getItem(index: indexPath.row)
+        let cellViewModel = TableViewCellViewModel(item: item, coreDataManager: viewModel.coreDataManager, cacheManager: viewModel.cacheManager)
+        cell.configure(with: cellViewModel)
         return cell
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 100 }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { TableViewConstants.rowHeight }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+       
+        let detailViewModel = DetailViewModel(cacheManager: viewModel.cacheManager, coreDataManager: viewModel.coreDataManager, item: viewModel.getItem(index: indexPath.row))
+        let detailViewController = DetailViewController(viewModel: detailViewModel)
         
-        let item = items[indexPath.row]
-        let vc = DetailViewController(item: item)
-        
-        self.navigationController?.pushViewController(vc, animated: true)
+        self.navigationController?.pushViewController(detailViewController, animated: true)
     }
 }
 
 // MARK: - UISearchBarDelegate
 extension HomeViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        pendingRequestWorkItem?.cancel()
-
-        if searchText.isEmpty {
-            searchBar.showsCancelButton = false
-            state = .idle
-            return
-        }
-
-        searchBar.showsCancelButton = true
-
-        let workItem = DispatchWorkItem { [weak self] in
-            self?.searchUsers(with: searchText)
-        }
-        pendingRequestWorkItem = workItem
-        debounceQueue.asyncAfter(deadline: .now() + 0.5, execute: workItem)
+        viewModel.textDidChange(searchText: searchText)
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        pendingRequestWorkItem?.cancel()
-        
-        if let query = searchBar.text, !query.isEmpty {
-            searchUsers(with: query)
-        }
+        viewModel.searchButtonClicked(with: searchBar.text)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
             searchBar.text = ""
             searchBar.resignFirstResponder()
-            self?.pendingRequestWorkItem?.cancel()
-            self?.state = .idle
+            self.viewModel.searchCancelButtonClicked()
             searchBar.showsCancelButton = false
         }
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        if let searchText = searchBar.text, !searchText.isEmpty {
-            searchBar.showsCancelButton = true
-        }
+        viewModel.searchBarTextDidBeginEditing(text: searchBar.text)
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = false
+    }
+}
+
+// MARK: - HomeViewControllerProtocol
+extension HomeViewController: HomeViewControllerProtocol {
+    func reloadRow(at indexPath: IndexPath) {
+        DispatchQueue.main.async {
+            if let visibleRows = self.tableView.indexPathsForVisibleRows,
+               visibleRows.contains(indexPath) {
+                self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            } else {
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
+    func isTableViewVisible() -> Bool {
+        return tableView.window != nil
+    }
+    
+    func isActivityIndicatorAnimating(_ isAnimating: Bool) {
+        isAnimating ? activityIndicator.startAnimating() :  activityIndicator.stopAnimating()
+    }
+    
+    func showEmptyStateView(_ isVisible: Bool) {
+        emptyStateView.isHidden = !isVisible
+    }
+    
+    func emptyStateViewConfigure(_ state: EmptyStateType) {
+        emptyStateView.configure(for: state)
+    }
+    
+    func showTable(_ isVisible: Bool) {
+        tableView.isHidden = !isVisible
+    }
+    
+    func shouldShowCancelButton(_ isShow: Bool) {
+        searchBar.showsCancelButton = isShow
+    }
+    
+    func scrollUp() {
+        DispatchQueue.main.async {
+            self.tableView.layoutIfNeeded()
+            self.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        }
+    }
+    
+    func showErrorAlert(title: String, message: String) {
+        self.showAlert(title: title, message: message)
+    }
+    
+    func tableReload() {
+        tableView.reloadData()
     }
 }

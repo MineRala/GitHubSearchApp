@@ -8,7 +8,14 @@
 import UIKit
 import SnapKit
 
+protocol FavoritesViewControllerProtocol: AnyObject {
+    func tableReload()
+    func updateEmptyState(isEmpty: Bool)
+}
+
+// MARK: - FavoritesViewController
 final class FavoritesViewController: UIViewController {
+    // MARK: - UI Components
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.dataSource = self
@@ -24,22 +31,24 @@ final class FavoritesViewController: UIViewController {
         return emptyView
     }()
     
-    private let coreDataManager = CoreDataManager()
-    private let cacheManager = CacheManager()
+    private var viewModel: FavoritesViewModelProtocol
     
-    private var allFavorites: [SearchItem] = []
+    // MARK: - Initializer
+    init(viewModel: FavoritesViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+        self.viewModel.delegate = self
+    }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .favoriteItemUpdated, object: nil)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        fetchFavorites()
-        addNotificationObserver()
+        viewModel.viewDidLoad()
     }
-
     
     private func setupUI() {
         view.backgroundColor = .white
@@ -49,55 +58,40 @@ final class FavoritesViewController: UIViewController {
 
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
         emptyStateView.snp.makeConstraints { $0.edges.equalToSuperview() }
-
-    }
-    
-    private func updateUIState() {
-        if allFavorites.isEmpty {
-            tableView.isHidden = true
-            emptyStateView.isHidden = false
-        } else {
-            tableView.isHidden = false
-            emptyStateView.isHidden = true
-            tableView.reloadData()
-        }
-    }
-    
-    private func addNotificationObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(fetchFavorites), name: .favoriteItemUpdated, object: nil)
-    }
-
-    private func convertSearchItem() -> [SearchItem] {
-        return coreDataManager.fetchFavorites().map { item in
-            SearchItem(login: item.login ?? "", avatarURL: item.avatarURL ?? "")
-        }
-    }
-    
-    @objc private func fetchFavorites() {
-        DispatchQueue.main.async {
-            self.allFavorites = self.convertSearchItem()
-            self.updateUIState()
-        }
     }
 }
 
 // MARK: - UITableViewDataSource & Delegate
 extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        allFavorites.count
+        viewModel.allFavoritesCount
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as? TableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewConstants.cellIdentifier, for: indexPath) as? TableViewCell else {
             return UITableViewCell()
         }
 
-        let item = allFavorites[indexPath.row]
-        cell.configure(with: item, cacheManager: cacheManager, coreDataManager: coreDataManager)
+        let item = viewModel.getItem(index: indexPath.row)
+        let cellViewModel = TableViewCellViewModel(item: item, coreDataManager: viewModel.coreDataManager, cacheManager: viewModel.cacheManager)
+        cell.configure(with: cellViewModel)
 
         return cell
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 100 }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { TableViewConstants.rowHeight }
 
+}
+
+// MARK: - FavoritesViewControllerProtocol
+extension FavoritesViewController: FavoritesViewControllerProtocol {
+    func tableReload() {
+        tableView.reloadData()
+    }
+    
+    func updateEmptyState(isEmpty: Bool) {
+        tableView.isHidden = isEmpty
+        emptyStateView.isHidden = !isEmpty
+    }
+    
 }

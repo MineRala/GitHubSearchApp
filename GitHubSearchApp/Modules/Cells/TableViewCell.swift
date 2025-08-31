@@ -8,8 +8,14 @@
 import UIKit
 import SnapKit
 
+protocol TableViewCellProtocol: AnyObject {
+    func updateFavoriteButton(isFavorite: Bool)
+    func updateImageView(with dataTask: Task<Data?, Never>)
+}
+
+// MARK: - TableViewCell
 final class TableViewCell: UITableViewCell {
-    // MARK: - UI Elements
+    // MARK: - UI Components
     private lazy var itemImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -36,10 +42,8 @@ final class TableViewCell: UITableViewCell {
         return button
     }()
     
-    private var item: SearchItem?
-    private var coreDataManager: CoreDataManagerProtocol?
+    private var viewModel: TableViewCellViewModelProtocol?
 
-    
     // MARK: - Initializer
       override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
           super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -55,9 +59,11 @@ final class TableViewCell: UITableViewCell {
           itemNameLabel.text = nil
           itemImageView.image = nil
           favoriteButton.setImage(AppIcons.star, for: .normal)
+          
+          guard let viewModel else { return }
+          viewModel.imageTaskCancel()
       }
 }
-
 
 // MARK: - UI
 extension TableViewCell {
@@ -92,36 +98,36 @@ extension TableViewCell {
     }
 }
 
+// MARK: - Private
 extension TableViewCell {
-    func configure(with item: SearchItem, cacheManager: CacheManagerProtocol?, coreDataManager: CoreDataManagerProtocol?) {
-        self.item = item
-        self.coreDataManager = coreDataManager
-        itemNameLabel.text = item.login
-        
-        if let cacheManager {
-            let currentURL = item.avatarURL  // snapshot of the current item
-            cacheManager.loadImage(from: currentURL) { [weak self] image in
-                guard let self = self else { return }
-                // Hücre reuse edilmişse eski item için image uygulanmaz
-                if self.item?.avatarURL == currentURL {
-                    self.itemImageView.image = image
-                }
-            }
-        }
-        updateFavoriteButton()
-    }
-    
     @objc private func favoriteButtonTapped() {
-        guard let item, let coreDataManager else { return }
+        guard let viewModel else { return }
+        viewModel.favoriteButtonTapped()
+    }
+}
+
+// MARK: - Configure
+extension TableViewCell {
+    func configure(with viewModel: TableViewCellViewModelProtocol) {
+        self.viewModel = viewModel
+        self.viewModel?.delegate = self
         
-        coreDataManager.toggleFavorite(user: item)
-        updateFavoriteButton()
-        NotificationCenter.default.post(name: .favoriteItemUpdated, object: item)
+        guard let viewModel = self.viewModel else { return }
+        
+        itemNameLabel.text = viewModel.login
+        favoriteButton.setImage(viewModel.isFavorite ? AppIcons.starFill : AppIcons.star, for: .normal)
+        
+        viewModel.setImageTask()
+    }
+}
+
+// MARK: - TableViewCellProtocol
+extension TableViewCell: TableViewCellProtocol {
+    func updateImageView(with dataTask: Task<Data?, Never>) {
+        itemImageView.setImage(from: dataTask)
     }
     
-    private func updateFavoriteButton() {
-        guard let item else { return }
-        
-        favoriteButton.setImage(item.isFavorite ? AppIcons.starFill : AppIcons.star, for: .normal)
+    func updateFavoriteButton(isFavorite: Bool) {
+        favoriteButton.setImage(isFavorite ? AppIcons.starFill : AppIcons.star, for: .normal)
     }
 }

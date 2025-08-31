@@ -7,13 +7,13 @@
 
 import Foundation
 
-// MARK: - NetworkClient Protocol
-protocol NetworkClient {
+// MARK: - NetworkManagerProtocol
+protocol NetworkManagerProtocol {
     func makeRequest<T: Decodable>(endpoint: Endpoint, type: T.Type, completed: @escaping (Result<T, AppError>) -> Void)
 }
 
 // MARK: - NetworkManager
-final class NetworkManager: NetworkClient {
+final class NetworkManager: NetworkManagerProtocol {
     private let session: URLSession
     private let decoder: JSONDecoder
 
@@ -35,7 +35,6 @@ final class NetworkManager: NetworkClient {
 
         URLSession.shared.dataTask(with: request) { data, response, error in
 
-            // Network error
             if let error = error as? URLError, error.code == .notConnectedToInternet {
                 completed(.failure(.noInternetConnection))
                 return
@@ -44,7 +43,6 @@ final class NetworkManager: NetworkClient {
                 return
             }
 
-            // HTTP response validation
             guard let httpResponse = response as? HTTPURLResponse else {
                 completed(.failure(.invalidResponse))
                 return
@@ -62,13 +60,11 @@ final class NetworkManager: NetworkClient {
                 return
             }
 
-            // Data validation
             guard let data = data else {
                 completed(.failure(.invalidData))
                 return
             }
 
-            // Decoding
             do {
                 let decoder = JSONDecoder()
                 let decodedObject = try decoder.decode(T.self, from: data)

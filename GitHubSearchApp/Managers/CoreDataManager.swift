@@ -17,8 +17,6 @@ protocol CoreDataManagerProtocol {
 }
 
 final class CoreDataManager: CoreDataManagerProtocol {
-    static let shared = CoreDataManager()
-
     private let persistentContainer: NSPersistentContainer
 
     init() {

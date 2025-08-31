@@ -8,10 +8,17 @@
 import UIKit
 import SnapKit
 
+protocol DetailViewControllerProtocol: AnyObject {
+    func isActivityIndicatorAnimating(_ isAnimating: Bool)
+    func updateFavoriteButton(isFavorite: Bool)
+    func updateUI(detail: ItemDetail)
+    func updateAvatarImage(with dataTask: Task<Data?, Never>)
+    func showErrorAlert(title: String, message: String)
+}
+
+// MARK: - DetailViewController
 final class DetailViewController: UIViewController {
-    private let item: SearchItem
-    private var detailData: ItemDetail?
-    
+    // MARK: - UI Components
     private lazy var avatarImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -77,26 +84,24 @@ final class DetailViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
-    private let cacheManager = CacheManager()
-    private let coreDataManager = CoreDataManager()
     
-    init(item: SearchItem) {
-        self.item = item
+    private var viewModel: DetailViewModelProtocol
+    
+    // MARK: - Initializer
+    init(viewModel: DetailViewModelProtocol) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        self.viewModel.delegate = self
     }
-
-    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .favoriteItemUpdated, object: nil)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        fetchUserDetail()
-        addNotificationObserver()
+        viewModel.viewDidLoad()
     }
 
     private func setupUI() {
@@ -112,36 +117,6 @@ final class DetailViewController: UIViewController {
         avatarImageView.snp.makeConstraints { $0.width.height.equalTo(220) }
         favoriteButton.snp.makeConstraints { $0.width.height.equalTo(44) }
         activityIndicator.snp.makeConstraints { $0.center.equalToSuperview() }
-
-    }
-
-    private func updateUI() {
-        guard let detail = detailData else { return }
-
-        usernameLabel.text = detail.login
-
-        if let name = detail.name, !name.isEmpty {
-            nameLabel.isHidden = false
-            nameLabel.text = name
-        } else {
-            nameLabel.isHidden = true
-        }
-
-        urlLabel.text = detail.htmlURL
-        
-        updateFavoriteButton()
-
-        cacheManager.loadImage(from: item.avatarURL) { [weak self] image in
-            guard let self else { return }
-            if let image { self.avatarImageView.image = image }
-        }
-    }
-    
-    @objc private func favoriteStatusChanged(_ notif: Notification) {
-        guard let updatedItem = notif.object as? SearchItem,
-              updatedItem.login == self.item.login else { return }
-        
-        updateFavoriteButton()
     }
 
     @objc private func openURL() {
@@ -150,34 +125,37 @@ final class DetailViewController: UIViewController {
         UIApplication.shared.open(url)
     }
 
-    private func addNotificationObserver() {
-        NotificationCenter.default.addObserver(self, selector: #selector(favoriteStatusChanged(_:)), name: .favoriteItemUpdated, object: nil)
-    }
-    
-    private func fetchUserDetail() {
-        activityIndicator.startAnimating()
-        NetworkManager().makeRequest(endpoint: .getUserDetail(userName: item.login), type: ItemDetail.self) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self else { return }
-                self.activityIndicator.stopAnimating()
-                switch result {
-                case .success(let detail):
-                    self.detailData = detail
-                    self.updateUI()
-                case .failure(let error):
-                    self.showAlert(title: "Error", message: error.errorMessage)
-                }
-            }
-        }
-    }
-    
     @objc private func favoriteButtonTapped() {        
-        coreDataManager.toggleFavorite(user: item)
-        NotificationCenter.default.post(name: .favoriteItemUpdated, object: item)
-    }
-    
-    private func updateFavoriteButton() {
-        favoriteButton.setImage(item.isFavorite ? AppIcons.starFill : AppIcons.star, for: .normal)
+        viewModel.favoriteButtonTapped()
     }
 }
 
+// MARK: - DetailViewControllerProtocol
+extension DetailViewController: DetailViewControllerProtocol {
+    func isActivityIndicatorAnimating(_ isAnimating: Bool) {
+        isAnimating ? activityIndicator.startAnimating() :  activityIndicator.stopAnimating()
+    }
+        
+    func updateFavoriteButton(isFavorite: Bool) {
+        favoriteButton.setImage(isFavorite ? AppIcons.starFill : AppIcons.star, for: .normal)
+    }
+    
+    func updateUI(detail: ItemDetail) {
+        usernameLabel.text = detail.login
+        if let name = detail.name, !name.isEmpty {
+            nameLabel.isHidden = false
+            nameLabel.text = name
+        } else {
+            nameLabel.isHidden = true
+        }
+        urlLabel.text = detail.htmlURL
+    }
+    
+    func updateAvatarImage(with dataTask: Task<Data?, Never>) {
+        avatarImageView.setImage(from: dataTask)
+    }
+    
+    func showErrorAlert(title: String, message: String) {
+        self.showAlert(title: title, message: message)
+    }
+}

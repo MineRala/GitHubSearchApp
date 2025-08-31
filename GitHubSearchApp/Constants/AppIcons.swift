@@ -12,3 +12,7 @@ struct AppIcons {
     static let starFill = UIImage(systemName: "star.fill")
     static let homeFill = UIImage(systemName: "house.fill")
 }
+
+struct AppImages {
+    static let placeholder = UIImage(named: "placeholder")
+}
