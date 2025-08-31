@@ -1,5 +1,5 @@
 //
-//  String.swift
+//  String+Ext.swift
 //  GitHubSearchApp
 //
 //  Created by MINERALA on 31.08.2025.

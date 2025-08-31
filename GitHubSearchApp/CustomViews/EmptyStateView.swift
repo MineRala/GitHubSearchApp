@@ -20,7 +20,7 @@ final class EmptyStateView: UIView {
 
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .boldSystemFont(ofSize: 20)
+        label.font = .montserrat(.bold, size: 20)
         label.textColor = .darkGray
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -29,7 +29,7 @@ final class EmptyStateView: UIView {
 
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16)
+        label.font = .montserrat(.regular, size: 16)
         label.textColor = .gray
         label.textAlignment = .center
         label.numberOfLines = 0

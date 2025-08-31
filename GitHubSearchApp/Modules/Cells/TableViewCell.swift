@@ -25,7 +25,7 @@ final class TableViewCell: UITableViewCell {
 
     private lazy var itemNameLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.font = .montserrat(.bold, size: 16)
         label.numberOfLines = 2
         label.lineBreakMode = .byTruncatingTail
         label.translatesAutoresizingMaskIntoConstraints = false

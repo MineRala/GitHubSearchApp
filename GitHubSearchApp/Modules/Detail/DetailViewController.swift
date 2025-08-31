@@ -30,7 +30,7 @@ final class DetailViewController: UIViewController {
 
     private lazy var usernameLabel: UILabel = {
         let label = UILabel()
-        label.font = .boldSystemFont(ofSize: 20)
+        label.font = .montserrat(.bold, size: 20)
         label.textAlignment = .center
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -39,7 +39,7 @@ final class DetailViewController: UIViewController {
 
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 18)
+        label.font = .montserrat(.regular, size: 18)
         label.textAlignment = .center
         label.textColor = .darkGray
         label.numberOfLines = 2
@@ -49,7 +49,7 @@ final class DetailViewController: UIViewController {
 
     private lazy var urlLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16)
+        label.font = .montserrat(.regular, size: 16)
         label.textAlignment = .center
         label.textColor = .systemBlue
         label.isUserInteractionEnabled = true
@@ -106,6 +106,7 @@ final class DetailViewController: UIViewController {
 
     private func setupUI() {
         view.backgroundColor = .white
+        setupNavigaitonBar()
         view.addSubview(stackView)
         view.addSubview(activityIndicator)
 
@@ -117,6 +118,14 @@ final class DetailViewController: UIViewController {
         avatarImageView.snp.makeConstraints { $0.width.height.equalTo(220) }
         favoriteButton.snp.makeConstraints { $0.width.height.equalTo(44) }
         activityIndicator.snp.makeConstraints { $0.center.equalToSuperview() }
+    }
+    
+    private func setupNavigaitonBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.backButtonAppearance.normal.titleTextAttributes = [
+            .font: UIFont.montserrat(.medium, size: 16)
+        ]
+        navigationController?.navigationBar.standardAppearance = appearance
     }
 
     @objc private func openURL() {

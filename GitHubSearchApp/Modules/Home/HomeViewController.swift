@@ -31,6 +31,7 @@ final class HomeViewController: UIViewController {
         searchBar.delegate = self
         searchBar.showsCancelButton = false
         searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.setPlaceholder(AppStrings.placeholderSearchBar, font: UIFont.montserrat(.regular, size: 16))
         return searchBar
     }()
 
@@ -81,8 +82,8 @@ final class HomeViewController: UIViewController {
     // MARK: - UI Setup
     private func setupUI() {
         view.backgroundColor = .white
-        navigationItem.title = AppStrings.home
-
+        setupNavigaitonBar()
+        
         [searchBar, tableView, emptyStateView, activityIndicator].forEach { view.addSubview($0) }
 
         searchBar.snp.makeConstraints {
@@ -99,6 +100,15 @@ final class HomeViewController: UIViewController {
         activityIndicator.snp.makeConstraints { $0.center.equalToSuperview() }
 
         view.bringSubviewToFront(searchBar)
+    }
+    
+    private  func setupNavigaitonBar() {
+        let titleFont = UIFont.montserrat(.semiBold, size: 20)
+        navigationController?.navigationBar.titleTextAttributes = [
+            .font: titleFont,
+            .foregroundColor: UIColor.black
+        ]
+        navigationItem.title = AppStrings.home
     }
 }
 

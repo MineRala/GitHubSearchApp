@@ -52,12 +52,21 @@ final class FavoritesViewController: UIViewController {
     
     private func setupUI() {
         view.backgroundColor = .white
-        navigationItem.title = AppStrings.favorites
-
+        setupNavigaitonBar()
+        
         [tableView, emptyStateView].forEach { view.addSubview($0) }
 
         tableView.snp.makeConstraints { $0.edges.equalToSuperview() }
         emptyStateView.snp.makeConstraints { $0.edges.equalToSuperview() }
+    }
+    
+    private  func setupNavigaitonBar() {
+        let titleFont = UIFont.montserrat(.semiBold, size: 20)
+        navigationController?.navigationBar.titleTextAttributes = [
+            .font: titleFont,
+            .foregroundColor: UIColor.black
+        ]
+        navigationItem.title = AppStrings.favorites
     }
 }
 
