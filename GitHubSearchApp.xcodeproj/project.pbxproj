@@ -10,7 +10,18 @@
 		F4C7AEBF2E61CB4700A3C438 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = F4C7AEBE2E61CB4700A3C438 /* SnapKit */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		F4C046542E64C0A2004F2387 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F4C7AE942E61C54200A3C438 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F4C7AE9B2E61C54200A3C438;
+			remoteInfo = GitHubSearchApp;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		F4C046502E64C0A2004F2387 /* GitHubSearchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GitHubSearchAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4C7AE9C2E61C54200A3C438 /* GitHubSearchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GitHubSearchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -25,6 +36,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		F4C046512E64C0A2004F2387 /* GitHubSearchAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = GitHubSearchAppTests;
+			sourceTree = "<group>";
+		};
 		F4C7AE9E2E61C54200A3C438 /* GitHubSearchApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -36,6 +52,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F4C0464D2E64C0A2004F2387 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F4C7AE992E61C54200A3C438 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -51,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				F4C7AE9E2E61C54200A3C438 /* GitHubSearchApp */,
+				F4C046512E64C0A2004F2387 /* GitHubSearchAppTests */,
 				F4C7AE9D2E61C54200A3C438 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				F4C7AE9C2E61C54200A3C438 /* GitHubSearchApp.app */,
+				F4C046502E64C0A2004F2387 /* GitHubSearchAppTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,6 +91,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		F4C0464F2E64C0A2004F2387 /* GitHubSearchAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F4C046562E64C0A2004F2387 /* Build configuration list for PBXNativeTarget "GitHubSearchAppTests" */;
+			buildPhases = (
+				F4C0464C2E64C0A2004F2387 /* Sources */,
+				F4C0464D2E64C0A2004F2387 /* Frameworks */,
+				F4C0464E2E64C0A2004F2387 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F4C046552E64C0A2004F2387 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F4C046512E64C0A2004F2387 /* GitHubSearchAppTests */,
+			);
+			name = GitHubSearchAppTests;
+			packageProductDependencies = (
+			);
+			productName = GitHubSearchAppTests;
+			productReference = F4C046502E64C0A2004F2387 /* GitHubSearchAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F4C7AE9B2E61C54200A3C438 /* GitHubSearchApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F4C7AEB22E61C54400A3C438 /* Build configuration list for PBXNativeTarget "GitHubSearchApp" */;
@@ -99,6 +147,10 @@
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					F4C0464F2E64C0A2004F2387 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = F4C7AE9B2E61C54200A3C438;
+					};
 					F4C7AE9B2E61C54200A3C438 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -123,11 +175,19 @@
 			projectRoot = "";
 			targets = (
 				F4C7AE9B2E61C54200A3C438 /* GitHubSearchApp */,
+				F4C0464F2E64C0A2004F2387 /* GitHubSearchAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F4C0464E2E64C0A2004F2387 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F4C7AE9A2E61C54200A3C438 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -138,6 +198,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F4C0464C2E64C0A2004F2387 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F4C7AE982E61C54200A3C438 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -147,7 +214,51 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		F4C046552E64C0A2004F2387 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F4C7AE9B2E61C54200A3C438 /* GitHubSearchApp */;
+			targetProxy = F4C046542E64C0A2004F2387 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		F4C046572E64C0A2004F2387 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 29JK24NZ4B;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.MineRala.GitHubSearchAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GitHubSearchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GitHubSearchApp";
+			};
+			name = Debug;
+		};
+		F4C046582E64C0A2004F2387 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 29JK24NZ4B;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.MineRala.GitHubSearchAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GitHubSearchApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GitHubSearchApp";
+			};
+			name = Release;
+		};
 		F4C7AEB32E61C54400A3C438 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -338,6 +449,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F4C046562E64C0A2004F2387 /* Build configuration list for PBXNativeTarget "GitHubSearchAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F4C046572E64C0A2004F2387 /* Debug */,
+				F4C046582E64C0A2004F2387 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F4C7AE972E61C54200A3C438 /* Build configuration list for PBXProject "GitHubSearchApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

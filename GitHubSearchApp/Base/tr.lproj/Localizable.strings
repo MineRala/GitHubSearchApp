@@ -34,3 +34,4 @@
 "noInternetConnection" = "Üzgünüz, internet bağlantısı yok. Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.";
 "unowned" = "Sahipsiz Hata!";
 "navigationError" = "Navigasyon Hatası: Koordinatör eksik.";
+"networkErrorTitle" = "Ağ Hatası";

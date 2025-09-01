@@ -123,7 +123,7 @@ final class HomeViewModel {
                     
                 case .failure(let error):
                     self.state = .empty
-                    self.delegate?.showErrorAlert(title: "Network Error", message: error.errorMessage)
+                    self.delegate?.showErrorAlert(title: AppStrings.networkErrorTitle, message: error.errorMessage)
                 }
             }
         }

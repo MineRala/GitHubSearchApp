@@ -23,7 +23,6 @@ final class NetworkManager: NetworkManagerProtocol {
     }
 
     func makeRequest<T: Decodable>(endpoint: Endpoint, type: T.Type, completed: @escaping (Result<T, AppError>) -> Void) {
-        // URL oluştur
         guard let url = URL(string: endpoint.baseURL + endpoint.path) else {
             completed(.failure(.invalidURL))
             return

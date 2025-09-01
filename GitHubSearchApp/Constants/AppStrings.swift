@@ -41,4 +41,5 @@ enum AppStrings {
     static let noInternetConnection = "noInternetConnection".localized
     static let unowned = "unowned".localized
     static let navigationError = "navigationError".localized
+    static let networkErrorTitle = "networkErrorTitle".localized
 }

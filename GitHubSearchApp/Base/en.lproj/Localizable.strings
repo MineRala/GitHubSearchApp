@@ -34,3 +34,4 @@
 "noInternetConnection" = "Sorry, there is no internet connection. Please check your internet connection and try again.";
 "unowned" = "Unowned Error!";
 "navigationError" = "Navigation Error: Missing coordinator.";
+"networkErrorTitle" = "Network Error";

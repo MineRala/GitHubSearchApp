@@ -23,6 +23,10 @@ final class CoreDataManager: CoreDataManagerProtocol {
         persistentContainer = NSPersistentContainer(name: AppStrings.favoriteEntityName)
         persistentContainer.loadPersistentStores { (_, error) in }
     }
+    
+    init(container: NSPersistentContainer) {
+        self.persistentContainer = container
+    }
 
     private var context: NSManagedObjectContext {
         return persistentContainer.viewContext
