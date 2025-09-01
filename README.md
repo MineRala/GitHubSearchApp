@@ -30,8 +30,10 @@ This project is built using the MVVM (Model-View-ViewModel) architecture. MVVM i
 - Protocol Oriented Programming (POP)
 - Delegate
 - Localizable
+- Custom Fonts (Montserrat)
 - Unit Tests
 - Image Caching (Memory Cache)
+
 
 # 3rd Party Libraries
 > <a href="https://github.com/SnapKit/SnapKit.git">SnapKit</a>
