@@ -11,7 +11,7 @@ protocol FavoritesViewModelProtocol {
     var networkManager: NetworkManagerProtocol { get }
     var cacheManager: CacheManagerProtocol { get }
     var coreDataManager: CoreDataManagerProtocol { get }
-    var delegate: FavoritesViewControllerProtocol? { get set }
+    var delegate: FavoritesViewControllerDelegate? { get set }
     
     var allFavoritesCount: Int { get }
     func viewDidLoad()
@@ -24,7 +24,7 @@ final class FavoritesViewModel {
     public let cacheManager: CacheManagerProtocol
     public let coreDataManager: CoreDataManagerProtocol
     
-    public weak var delegate: FavoritesViewControllerProtocol?
+    public weak var delegate: FavoritesViewControllerDelegate?
     
     private var allFavorites: [SearchItem] = []
 

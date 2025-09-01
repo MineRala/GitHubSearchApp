@@ -8,7 +8,7 @@
 import Foundation
 @testable import GitHubSearchApp
 
-final class MockDetailViewControllerDelegate: DetailViewControllerProtocol {
+final class MockDetailViewControllerDelegate: DetailViewControllerDelegate {
     
     // MARK: - Properties to track calls
     var isActivityIndicatorAnimatingCalled = false

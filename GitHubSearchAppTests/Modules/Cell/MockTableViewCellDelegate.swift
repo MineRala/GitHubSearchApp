@@ -9,7 +9,7 @@ import UIKit
 @testable import GitHubSearchApp
 
 // MARK: - MockTableViewCellDelegate
-final class MockTableViewCellDelegate: TableViewCellProtocol {
+final class MockTableViewCellDelegate: TableViewCellDelegate {
     
     var updateFavoriteButtonCalled = false
     var updateFavoriteButtonState: Bool?

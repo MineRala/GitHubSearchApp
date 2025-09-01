@@ -10,7 +10,7 @@ import Foundation
 protocol DetailViewModelProtocol {
     var cacheManager: CacheManagerProtocol { get }
     var coreDataManager: CoreDataManagerProtocol { get }
-    var delegate: DetailViewControllerProtocol? { get set }
+    var delegate: DetailViewControllerDelegate? { get set }
     
     func viewDidLoad()
     func favoriteButtonTapped()
@@ -21,7 +21,7 @@ final class DetailViewModel {
     public let cacheManager: CacheManagerProtocol
     public let coreDataManager: CoreDataManagerProtocol
     
-    public weak var delegate: DetailViewControllerProtocol?
+    public weak var delegate: DetailViewControllerDelegate?
     
     private let item: SearchItem
     private var detailData: ItemDetail?

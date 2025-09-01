@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-protocol HomeViewControllerProtocol: AnyObject {
+protocol HomeViewControllerDelegate: AnyObject {
     func tableReload()
     func showErrorAlert(title: String, message: String)
     func scrollUp()
@@ -173,8 +173,8 @@ extension HomeViewController: UISearchBarDelegate {
     }
 }
 
-// MARK: - HomeViewControllerProtocol
-extension HomeViewController: HomeViewControllerProtocol {
+// MARK: - HomeViewControllerDelegate
+extension HomeViewController: HomeViewControllerDelegate {
     func reloadRow(at indexPath: IndexPath) {
         DispatchQueue.main.async {
             if let visibleRows = self.tableView.indexPathsForVisibleRows,

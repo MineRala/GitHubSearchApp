@@ -8,7 +8,7 @@
 import UIKit
 @testable import GitHubSearchApp
 
-final class MockHomeViewControllerDelegate: HomeViewControllerProtocol {
+final class MockHomeViewControllerDelegate: HomeViewControllerDelegate {
 
     // MARK: - Call tracking
     var tableReloadCalled = false

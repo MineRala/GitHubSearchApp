@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-protocol DetailViewControllerProtocol: AnyObject {
+protocol DetailViewControllerDelegate: AnyObject {
     func isActivityIndicatorAnimating(_ isAnimating: Bool)
     func updateFavoriteButton(isFavorite: Bool)
     func updateUI(detail: ItemDetail)
@@ -139,8 +139,8 @@ final class DetailViewController: UIViewController {
     }
 }
 
-// MARK: - DetailViewControllerProtocol
-extension DetailViewController: DetailViewControllerProtocol {
+// MARK: - DetailViewControllerDelegate
+extension DetailViewController: DetailViewControllerDelegate {
     func isActivityIndicatorAnimating(_ isAnimating: Bool) {
         isAnimating ? activityIndicator.startAnimating() :  activityIndicator.stopAnimating()
     }

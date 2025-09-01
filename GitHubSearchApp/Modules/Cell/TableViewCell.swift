@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-protocol TableViewCellProtocol: AnyObject {
+protocol TableViewCellDelegate: AnyObject {
     func updateFavoriteButton(isFavorite: Bool)
     func updateImageView(with dataTask: Task<Data?, Never>)
 }
@@ -121,8 +121,8 @@ extension TableViewCell {
     }
 }
 
-// MARK: - TableViewCellProtocol
-extension TableViewCell: TableViewCellProtocol {
+// MARK: - TableViewCellDelegate
+extension TableViewCell: TableViewCellDelegate {
     func updateImageView(with dataTask: Task<Data?, Never>) {
         itemImageView.setImage(from: dataTask)
     }

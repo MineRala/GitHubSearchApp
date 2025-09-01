@@ -7,12 +7,14 @@
 
 import UIKit
 
+// MARK: - CacheManagerProtocol
 protocol CacheManagerProtocol {
     func getImage(for url: String) -> UIImage?
     func cacheImage(_ image: UIImage, for url: String)
     func loadImage(from url: String) async -> Data?
 }
 
+// MARK: - CacheManager
 final class CacheManager: CacheManagerProtocol {
     private let imageCache = NSCache<NSString, UIImage>()
     

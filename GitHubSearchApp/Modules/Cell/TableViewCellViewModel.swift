@@ -10,7 +10,7 @@ import Foundation
 protocol TableViewCellViewModelProtocol {
     var login: String { get }
     var isFavorite: Bool { get }
-    var delegate: TableViewCellProtocol? { get set }
+    var delegate: TableViewCellDelegate? { get set }
 
     func favoriteButtonTapped()
     func imageTaskCancel()
@@ -22,7 +22,7 @@ final class TableViewCellViewModel {
     private let coreDataManager: CoreDataManagerProtocol
     private let cacheManager: CacheManagerProtocol
     
-    public weak var delegate: TableViewCellProtocol?
+    public weak var delegate: TableViewCellDelegate?
     
     private let item: SearchItem
     private var imageTask: Task<Data?, Never>?

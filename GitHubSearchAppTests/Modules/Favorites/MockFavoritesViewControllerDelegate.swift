@@ -9,7 +9,7 @@ import Foundation
 @testable import GitHubSearchApp
 
 // MARK: - MockFavoritesViewControllerDelegate
-final class MockFavoritesViewControllerDelegate: FavoritesViewControllerProtocol {
+final class MockFavoritesViewControllerDelegate: FavoritesViewControllerDelegate {
     
     var tableReloadCalled = false
     var updateEmptyStateCalled = false

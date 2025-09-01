@@ -11,7 +11,7 @@ protocol HomeViewModelProtocol {
     var networkManager: NetworkManagerProtocol { get }
     var cacheManager: CacheManagerProtocol { get }
     var coreDataManager: CoreDataManagerProtocol { get }
-    var delegate: HomeViewControllerProtocol? { get set }
+    var delegate: HomeViewControllerDelegate? { get set }
     
     var itemsCount: Int { get }
     func viewDidLoad()
@@ -29,7 +29,7 @@ final class HomeViewModel {
     public let cacheManager: CacheManagerProtocol
     public let coreDataManager: CoreDataManagerProtocol
     
-    public weak var delegate: HomeViewControllerProtocol?
+    public weak var delegate: HomeViewControllerDelegate?
     
     private var items: [SearchItem] = []
     private var needsReload = false

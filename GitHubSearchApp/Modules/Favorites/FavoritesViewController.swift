@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-protocol FavoritesViewControllerProtocol: AnyObject {
+protocol FavoritesViewControllerDelegate: AnyObject {
     func tableReload()
     func updateEmptyState(isEmpty: Bool)
 }
@@ -92,8 +92,8 @@ extension FavoritesViewController: UITableViewDataSource, UITableViewDelegate {
 
 }
 
-// MARK: - FavoritesViewControllerProtocol
-extension FavoritesViewController: FavoritesViewControllerProtocol {
+// MARK: - FavoritesViewControllerDelegate
+extension FavoritesViewController: FavoritesViewControllerDelegate {
     func tableReload() {
         tableView.reloadData()
     }
