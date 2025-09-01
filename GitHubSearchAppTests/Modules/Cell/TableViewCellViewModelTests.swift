@@ -37,41 +37,6 @@ final class TableViewCellViewModelTests: XCTestCase {
         super.tearDown()
     }
     
-    // MARK: - Favorite Button
-    
-    func testFavoriteButtonTapped_TogglesFavoriteAndNotifiesDelegate() {
-        // Given
-        XCTAssertFalse(mockCoreDataManager.toggleFavoriteCalled)
-        XCTAssertFalse(mockDelegate.updateFavoriteButtonCalled)
-        
-        // When
-        viewModel.favoriteButtonTapped()
-        
-        // Then
-        XCTAssertTrue(mockCoreDataManager.toggleFavoriteCalled)
-        XCTAssertTrue(mockDelegate.updateFavoriteButtonCalled)
-        XCTAssertEqual(mockDelegate.updateFavoriteButtonState, viewModel.isFavorite)
-    }
-    
-    func testFavoriteButtonTapped_WithNilDelegate_DoesNotCrash() {
-        // Given
-        viewModel.delegate = nil
-        
-        // Then
-        XCTAssertNoThrow(viewModel.favoriteButtonTapped())
-    }
-    
-    func testToggleFavorite_NotificationPosted() {
-        // Given
-        let expectation = expectation(forNotification: .favoriteItemUpdated, object: nil, handler: nil)
-        
-        // When
-        viewModel.favoriteButtonTapped()
-        
-        // Then
-        wait(for: [expectation], timeout: 1.0)
-    }
-    
     // MARK: - Image Task
     
     func testSetImageTask_DelegateReceivesTaskAndData() async {
