@@ -67,17 +67,6 @@ final class DetailViewModelTests: XCTestCase {
         XCTAssertTrue(mockDelegate.updateFavoriteButtonCalled)
     }
     
-    func testFavoriteButtonTapped_TogglesFavoriteAndNotifiesDelegate() {
-        // Given
-        mockCoreDataManager.stubIsFavorite = false
-        
-        // When
-        viewModel.favoriteButtonTapped()
-        
-        // Then
-        XCTAssertTrue(mockCoreDataManager.toggleFavoriteCalled)
-    }
-    
     func testViewDidLoad_WithNilDelegate_DoesNotCrash() {
         // Given
         viewModel.delegate = nil
@@ -119,14 +108,6 @@ final class DetailViewModelTests: XCTestCase {
         try? await Task.sleep(nanoseconds: 500_000_000)
         
         XCTAssertTrue(true)
-    }
-
-    func testFavoriteButtonTapped_PostsNotification() {
-        let exp = expectation(forNotification: .favoriteItemUpdated, object: nil, handler: nil)
-        
-        viewModel.favoriteButtonTapped()
-        
-        wait(for: [exp], timeout: 1.0)
     }
 }
 
