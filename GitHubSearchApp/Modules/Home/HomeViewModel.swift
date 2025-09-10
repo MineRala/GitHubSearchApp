@@ -13,10 +13,9 @@ protocol HomeViewModelProtocol {
     var coreDataManager: CoreDataManagerProtocol { get }
     var delegate: HomeViewControllerDelegate? { get set }
     
-    var itemsCount: Int { get }
     func viewDidLoad()
     func viewWillAppear()
-    func getItem(index: Int) -> SearchItem
+    func snapshotItems() -> [SearchItem]
     func textDidChange(searchText: String)
     func searchButtonClicked(with text: String?)
     func searchCancelButtonClicked()
@@ -132,10 +131,6 @@ final class HomeViewModel {
 
 // MARK: - HomeViewModelProtocol
 extension HomeViewModel: HomeViewModelProtocol {
-    var itemsCount: Int {
-        items.count
-    }
-    
     func viewDidLoad() {
         NotificationCenter.default.addObserver(self, selector: #selector(handleFavoriteUpdated(_:)), name: .favoriteItemUpdated, object: nil)
         state = .idle
@@ -148,8 +143,8 @@ extension HomeViewModel: HomeViewModelProtocol {
         }
     }
     
-    func getItem(index: Int) -> SearchItem {
-        items[index]
+    func snapshotItems() -> [SearchItem] {
+        return items
     }
     
     func textDidChange(searchText: String) {

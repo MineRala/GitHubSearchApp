@@ -37,7 +37,6 @@ final class HomeViewController: UIViewController {
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.dataSource = self
         tableView.delegate = self
         tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewConstants.cellIdentifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -55,6 +54,7 @@ final class HomeViewController: UIViewController {
     private lazy var emptyStateView = EmptyStateView()
 
     private var viewModel: HomeViewModelProtocol
+    private var dataSource: UITableViewDiffableDataSource<Section, SearchItem>!
    
     // MARK:  Initializer
     init(viewModel: HomeViewModelProtocol) {
@@ -71,6 +71,7 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupDataSource()
         viewModel.viewDidLoad()
     }
     
@@ -110,36 +111,46 @@ final class HomeViewController: UIViewController {
         ]
         navigationItem.title = AppStrings.home
     }
+    
+    private func setupDataSource() {
+        dataSource = UITableViewDiffableDataSource<Section, SearchItem>(tableView: tableView) { [weak self] tableView, indexPath, item in
+            guard let self,
+                  let cell = tableView.dequeueReusableCell(withIdentifier: TableViewConstants.cellIdentifier, for: indexPath) as? TableViewCell else {
+                return UITableViewCell()
+            }
+            
+            let cellViewModel = TableViewCellViewModel(item: item,
+                                                       coreDataManager: self.viewModel.coreDataManager,
+                                                       cacheManager: self.viewModel.cacheManager)
+            cell.configure(with: cellViewModel)
+            return cell
+        }
+    }
+    
+    private func applySnapshot(animatingDifferences: Bool = false) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, SearchItem>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(viewModel.snapshotItems())
+        dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
+    }
 }
 
-// MARK: - UITableViewDataSource & Delegate
-extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel.itemsCount
+// MARK: - UITableViewDelegate
+extension HomeViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        TableViewConstants.rowHeight
     }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TableViewConstants.cellIdentifier, for: indexPath) as? TableViewCell else {
-            return UITableViewCell()
-        }
-        
-        guard indexPath.row < viewModel.itemsCount else { return cell }
-        
-        let item = viewModel.getItem(index: indexPath.row)
-        let cellViewModel = TableViewCellViewModel(item: item, coreDataManager: viewModel.coreDataManager, cacheManager: viewModel.cacheManager)
-        cell.configure(with: cellViewModel)
-        return cell
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { TableViewConstants.rowHeight }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
         tableView.deselectRow(at: indexPath, animated: true)
-       
-        let detailViewModel = DetailViewModel(cacheManager: viewModel.cacheManager, coreDataManager: viewModel.coreDataManager, item: viewModel.getItem(index: indexPath.row))
+        
+        let detailViewModel = DetailViewModel(cacheManager: viewModel.cacheManager,
+                                              coreDataManager: viewModel.coreDataManager,
+                                              item: item)
         let detailViewController = DetailViewController(viewModel: detailViewModel)
         
-        self.navigationController?.pushViewController(detailViewController, animated: true)
+        navigationController?.pushViewController(detailViewController, animated: true)
     }
 }
 
@@ -176,14 +187,10 @@ extension HomeViewController: UISearchBarDelegate {
 // MARK: - HomeViewControllerDelegate
 extension HomeViewController: HomeViewControllerDelegate {
     func reloadRow(at indexPath: IndexPath) {
-        DispatchQueue.main.async {
-            if let visibleRows = self.tableView.indexPathsForVisibleRows,
-               visibleRows.contains(indexPath) {
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
-            } else {
-                self.tableView.reloadData()
-            }
-        }
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        var snapshot = dataSource.snapshot()
+        snapshot.reloadItems([item])
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
     
     func isTableViewVisible() -> Bool {
@@ -222,6 +229,7 @@ extension HomeViewController: HomeViewControllerDelegate {
     }
     
     func tableReload() {
-        tableView.reloadData()
+        applySnapshot()
     }
 }
+

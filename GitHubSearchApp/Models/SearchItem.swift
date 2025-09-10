@@ -11,7 +11,7 @@ struct SearchResponse: Decodable {
     let items: [SearchItem]
 }
 
-struct SearchItem: Decodable {
+struct SearchItem: Decodable, Hashable {
     let login: String
     let avatarURL: String
     

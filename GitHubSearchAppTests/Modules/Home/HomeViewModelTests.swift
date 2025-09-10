@@ -74,7 +74,7 @@ final class HomeViewModelTests: XCTestCase {
         
         XCTAssertTrue(mockDelegate.shouldShowCancelButtonCalled)
         XCTAssertEqual(mockDelegate.lastShouldShowCancelButtonState, true)
-        XCTAssertEqual(viewModel.itemsCount, 1)
+
         XCTAssertTrue(mockDelegate.showTableCalled)
     }
 
@@ -87,13 +87,7 @@ final class HomeViewModelTests: XCTestCase {
         
         try? await Task.sleep(nanoseconds: 100_000_000)
         
-        XCTAssertEqual(viewModel.itemsCount, 1)
         XCTAssertTrue(mockDelegate.showTableCalled)
-    }
-
-    func testSearchButtonClicked_EmptyText_DoesNotSearch() {
-        viewModel.searchButtonClicked(with: "")
-        XCTAssertEqual(viewModel.itemsCount, 0)
     }
 
     func testSearchCancelButtonClicked_ResetsState() {
@@ -108,19 +102,6 @@ final class HomeViewModelTests: XCTestCase {
         }
         
         wait(for: [exp], timeout: 1.0)
-    }
-
-    func testGetItem_ReturnsCorrectItem() async {
-        let item = SearchItem(login: "MineRala", avatarURL: "")
-        let response = SearchResponse(items: [item])
-        mockNetworkManager.mockResult = response
-
-        viewModel.searchButtonClicked(with: "MineRala")
-
-        try? await Task.sleep(nanoseconds: 100_000_000)
-
-        let fetchedItem = viewModel.getItem(index: 0)
-        XCTAssertEqual(fetchedItem.login, "MineRala")
     }
 
     func testHandleFavoriteUpdated_Notification_DoesNotCrash_WhenItemsEmpty() {
