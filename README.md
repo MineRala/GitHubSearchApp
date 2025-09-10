@@ -26,6 +26,7 @@ This project is built using the MVVM (Model-View-ViewModel) architecture. MVVM i
 - MVVM
 - Core Data
 - Depedency Injection
+- Diffable Data Source
 - Error Handling
 - Protocol Oriented Programming (POP)
 - Delegate
